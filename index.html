@@ -7,7 +7,7 @@
 <style>
   body {
     margin: 0;
-    font-family: "Arial", sans-serif;
+    font-family: Arial, sans-serif;
     background: #0f0f0f;
     color: #fff;
     display: flex;
@@ -15,12 +15,19 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    overflow: hidden;
   }
   h1 {
     font-size: 2em;
     color: #009cff;
     margin-bottom: 20px;
     text-shadow: 0 0 10px #009cff;
+  }
+  .menu-container {
+    height: 300px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    width: 80%;
   }
   .menu {
     display: flex;
@@ -30,14 +37,14 @@
   .menu button {
     background: #1a1a1a;
     border: 2px solid #009cff;
-    padding: 15px 30px;
+    padding: 20px;
     font-size: 1.2em;
     color: #fff;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .menu button:hover {
+  .menu button:hover, .menu button.active {
     background: #009cff;
     color: #000;
     transform: scale(1.05);
@@ -46,18 +53,70 @@
 </head>
 <body>
   <h1>JackStation 5</h1>
-  <div class="menu">
-    <button onclick="startGame('https://crazygames.com')">Start Game 1</button>
-    <button onclick="startGame('https://poki.com')">Start Game 2</button>
-    <button onclick="startGame('https://itch.io/games/html5')">Start Game 3</button>
-    <button onclick="alert('Settings coming soon!')">Settings</button>
+  <div class="menu-container">
+    <div class="menu" id="menu">
+      <button onclick="startGame('game1.html')" class="active">Game 1</button>
+      <button onclick="startGame('game2.html')">Game 2</button>
+      <button onclick="startGame('game3.html')">Game 3</button>
+      <button onclick="startGame('game4.html')">Game 4</button>
+    </div>
   </div>
 
 <script>
-  function startGame(url) {
-    window.location.href = url;
+const menuButtons = document.querySelectorAll('.menu button');
+let selectedIndex = 0;
+
+// Highlight button based on selectedIndex
+function updateHighlight() {
+  menuButtons.forEach((btn, i) => {
+    btn.classList.toggle('active', i === selectedIndex);
+    if(i === selectedIndex) btn.scrollIntoView({behavior: "smooth", block: "center"});
+  });
+}
+
+// Start game
+function startGame(url) {
+  window.location.href = url;
+}
+
+// Keyboard support (for D-pad / mapped joystick)
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowDown') {
+    selectedIndex = (selectedIndex + 1) % menuButtons.length;
+    updateHighlight();
+  } else if(e.key === 'ArrowUp') {
+    selectedIndex = (selectedIndex - 1 + menuButtons.length) % menuButtons.length;
+    updateHighlight();
+  } else if(e.key === 'Enter') {
+    menuButtons[selectedIndex].click();
   }
+});
+
+// Gamepad support
+window.addEventListener("gamepadconnected", () => {
+  const gpIndex = 0;
+  function pollGamepad() {
+    const gp = navigator.getGamepads()[gpIndex];
+    if(!gp) return;
+
+    // Vertical axis (left stick)
+    if(gp.axes[1] < -0.5) {
+      selectedIndex = (selectedIndex - 1 + menuButtons.length) % menuButtons.length;
+      updateHighlight();
+    } else if(gp.axes[1] > 0.5) {
+      selectedIndex = (selectedIndex + 1) % menuButtons.length;
+      updateHighlight();
+    }
+
+    // Button 0 = A
+    if(gp.buttons[0].pressed) {
+      menuButtons[selectedIndex].click();
+    }
+
+    requestAnimationFrame(pollGamepad);
+  }
+  pollGamepad();
+});
 </script>
 </body>
 </html>
-
