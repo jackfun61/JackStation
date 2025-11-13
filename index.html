@@ -54,22 +54,20 @@ h1 {
 <body>
 <h1>JackStation 5</h1>
 <div class="menu-container">
-  <div class="menu" id="menu">
-    <!-- Main Menu -->
-    <button onclick="openMenu('games')" class="active">Games</button>
-    <button onclick="openMenu('social')">Social</button>
-  </div>
+  <div class="menu" id="menu"></div>
 </div>
 
 <script>
+// ---- JS START ----
 const mainMenu = [
   {name:'Games', submenu:[{name:'Game 1', link:'game1.html'},{name:'Game 2', link:'game2.html'}]},
   {name:'Social', submenu:[{name:'Friends', link:'friend.html'},{name:'Messaging', link:'JS5chat.html'}]}
 ];
 
-let currentMenu = 'main'; // 'main', 'games', 'social'
-let menuButtons = document.querySelectorAll('.menu button');
+let currentMenu = 'main';
+let menuButtons = [];
 let selectedIndex = 0;
+let lastClickTime = 0;
 
 function updateHighlight() {
   menuButtons.forEach((btn, i) => {
@@ -78,10 +76,19 @@ function updateHighlight() {
   });
 }
 
+function safeClick(btn) {
+  const now = Date.now();
+  if(now - lastClickTime > 200) {
+    btn.click();
+    lastClickTime = now;
+  }
+}
+
 function openMenu(menuName) {
   const menuDiv = document.getElementById('menu');
   menuDiv.innerHTML = '';
   let buttons = [];
+
   if(menuName === 'main') {
     mainMenu.forEach((item) => {
       const btn = document.createElement('button');
@@ -105,6 +112,7 @@ function openMenu(menuName) {
     menuDiv.appendChild(backBtn);
     buttons.push(backBtn);
   }
+
   menuButtons = buttons;
   selectedIndex = 0;
   currentMenu = menuName;
@@ -123,7 +131,7 @@ document.addEventListener('keydown', (e) => {
     selectedIndex = (selectedIndex - 1 + menuButtons.length) % menuButtons.length;
     updateHighlight();
   } else if(e.key === 'Enter') {
-    menuButtons[selectedIndex].click();
+    safeClick(menuButtons[selectedIndex]);
   }
 });
 
@@ -134,7 +142,6 @@ window.addEventListener("gamepadconnected", () => {
     const gp = navigator.getGamepads()[gpIndex];
     if(!gp) return;
 
-    // Vertical axis (left stick)
     if(gp.axes[1] < -0.5) {
       selectedIndex = (selectedIndex - 1 + menuButtons.length) % menuButtons.length;
       updateHighlight();
@@ -143,15 +150,15 @@ window.addEventListener("gamepadconnected", () => {
       updateHighlight();
     }
 
-    // Button 0 = A
     if(gp.buttons[0].pressed) {
-      menuButtons[selectedIndex].click();
+      safeClick(menuButtons[selectedIndex]);
     }
 
     requestAnimationFrame(pollGamepad);
   }
   pollGamepad();
 });
+// ---- JS END ----
 </script>
 </body>
 </html>
