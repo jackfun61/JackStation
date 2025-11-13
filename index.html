@@ -1,42 +1,65 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>JackStation</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }
+    body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; background: #f0f0f0; }
     .btn { padding: 12px 24px; font-size: 16px; margin: 10px; cursor: pointer; }
-    #loginImg { width: 100px; height: auto; display: none; vertical-align: middle; }
+    #loginForm { margin-top: 20px; }
+    input { padding: 8px; margin: 5px; width: 200px; }
+    #loginImg { width: 100px; height: auto; display: none; vertical-align: middle; margin-top: 10px; }
   </style>
 </head>
 <body>
   <h1>Welcome to JackStation</h1>
 
-  <!-- Your other buttons -->
+  <!-- Other buttons -->
   <button class="btn" onclick="alert('Games clicked')">Games</button>
   <button class="btn" onclick="alert('Social clicked')">Social</button>
   <button class="btn" onclick="alert('Accessories clicked')">Accessories</button>
 
-  <!-- Login button -->
-  <button class="btn" id="loginBtn" onclick="login()">Log In</button>
+  <!-- Login form -->
+  <div id="loginForm">
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button class="btn" id="loginBtn" onclick="login()">Log In</button>
+  </div>
+
+  <!-- Image shown after login -->
   <img id="loginImg" src="login.png" alt="Logged in">
 
   <script>
     function login() {
-      const username = prompt("Enter username:");
-      const password = prompt("Enter password:");
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-      if(username === "jack" && password === "1234") {
-        // Hide login button only
-        document.getElementById('loginBtn').style.display = 'none';
-        // Show login image
-        document.getElementById('loginImg').style.display = 'inline';
-      } else {
-        alert("Invalid credentials!");
+      if(!email || !password){
+        alert("Please enter both email and password!");
+        return;
       }
+
+      // Send POST to your Render email verification endpoint
+      fetch('https://jackstation.onrender.com/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, code: password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success){
+          // Hide form and show login image
+          document.getElementById('loginForm').style.display = 'none';
+          document.getElementById('loginImg').style.display = 'inline';
+        } else {
+          alert("Verification failed! " + (data.error || ""));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error connecting to server.");
+      });
     }
   </script>
 </body>
 </html>
-
-
