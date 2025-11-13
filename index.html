@@ -1,35 +1,36 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>JackStation</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding-top: 100px; }
-    button { padding: 12px 24px; font-size: 16px; cursor: pointer; }
-    img { width: 150px; height: auto; margin-top: 20px; display: none; }
+    body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }
+    .btn { padding: 12px 24px; font-size: 16px; margin: 10px; cursor: pointer; }
+    #loginImg { width: 100px; height: auto; display: none; vertical-align: middle; }
   </style>
 </head>
 <body>
   <h1>Welcome to JackStation</h1>
-  
+
+  <!-- Your other buttons -->
+  <button class="btn" onclick="alert('Games clicked')">Games</button>
+  <button class="btn" onclick="alert('Social clicked')">Social</button>
+  <button class="btn" onclick="alert('Accessories clicked')">Accessories</button>
+
   <!-- Login button -->
-  <button id="loginBtn" onclick="login()">Log In</button>
-  
-  <!-- Image shown after login -->
+  <button class="btn" id="loginBtn" onclick="login()">Log In</button>
   <img id="loginImg" src="login.png" alt="Logged in">
 
   <script>
     function login() {
-      // Simple proof-of-concept login
-      // In the future, replace this with real server verification
       const username = prompt("Enter username:");
       const password = prompt("Enter password:");
 
       if(username === "jack" && password === "1234") {
-        // Hide the button
+        // Hide login button only
         document.getElementById('loginBtn').style.display = 'none';
-        // Show the image
-        document.getElementById('loginImg').style.display = 'block';
+        // Show login image
+        document.getElementById('loginImg').style.display = 'inline';
       } else {
         alert("Invalid credentials!");
       }
@@ -37,3 +38,5 @@
   </script>
 </body>
 </html>
+
+
