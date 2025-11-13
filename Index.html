@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JackStation 5</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: #0f0f0f;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  h1 {
+    font-size: 2em;
+    color: #009cff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #009cff;
+  }
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .menu button {
+    background: #1a1a1a;
+    border: 2px solid #009cff;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .menu button:hover {
+    background: #009cff;
+    color: #000;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+  <h1>JackStation 5</h1>
+  <div class="menu">
+    <button onclick="startGame('https://crazygames.com')">Start Game 1</button>
+    <button onclick="startGame('https://poki.com')">Start Game 2</button>
+    <button onclick="startGame('https://itch.io/games/html5')">Start Game 3</button>
+    <button onclick="alert('Settings coming soon!')">Settings</button>
+  </div>
+
+<script>
+  function startGame(url) {
+    window.location.href = url;
+  }
+</script>
+</body>
+</html>
