@@ -1,164 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JackStation 5</title>
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden;
-}
-h1 {
-  font-size: 2em;
-  color: #009cff;
-  margin-bottom: 20px;
-  text-shadow: 0 0 10px #009cff;
-}
-.menu-container {
-  height: 300px;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  width: 80%;
-}
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.menu button {
-  background: #1a1a1a;
-  border: 2px solid #009cff;
-  padding: 20px;
-  font-size: 1.2em;
-  color: #fff;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.menu button:hover, .menu button.active {
-  background: #009cff;
-  color: #000;
-  transform: scale(1.05);
-}
-</style>
+  <meta charset="UTF-8">
+  <title>JackStation</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding-top: 100px; }
+    button { padding: 12px 24px; font-size: 16px; cursor: pointer; }
+    img { width: 150px; height: auto; margin-top: 20px; display: none; }
+  </style>
 </head>
 <body>
-<h1>JackStation 5</h1>
-<div class="menu-container">
-  <div class="menu" id="menu"></div>
-</div>
+  <h1>Welcome to JackStation</h1>
+  
+  <!-- Login button -->
+  <button id="loginBtn" onclick="login()">Log In</button>
+  
+  <!-- Image shown after login -->
+  <img id="loginImg" src="login.png" alt="Logged in">
 
-<script>
-// ---- JS START ----
-const mainMenu = [
-  {name:'Games', submenu:[{name:'Game 1', link:'game1.html'},{name:'Game 2', link:'game2.html'}]},
-  {name:'Social', submenu:[{name:'Friends', link:'friend.html'},{name:'Messaging', link:'JS5chat.html'}]}
-];
+  <script>
+    function login() {
+      // Simple proof-of-concept login
+      // In the future, replace this with real server verification
+      const username = prompt("Enter username:");
+      const password = prompt("Enter password:");
 
-let currentMenu = 'main';
-let menuButtons = [];
-let selectedIndex = 0;
-let lastClickTime = 0;
-
-function updateHighlight() {
-  menuButtons.forEach((btn, i) => {
-    btn.classList.toggle('active', i === selectedIndex);
-    if(i === selectedIndex) btn.scrollIntoView({behavior: "smooth", block: "center"});
-  });
-}
-
-function safeClick(btn) {
-  const now = Date.now();
-  if(now - lastClickTime > 200) {
-    btn.click();
-    lastClickTime = now;
-  }
-}
-
-function openMenu(menuName) {
-  const menuDiv = document.getElementById('menu');
-  menuDiv.innerHTML = '';
-  let buttons = [];
-
-  if(menuName === 'main') {
-    mainMenu.forEach((item) => {
-      const btn = document.createElement('button');
-      btn.textContent = item.name;
-      btn.onclick = () => openMenu(item.name.toLowerCase());
-      menuDiv.appendChild(btn);
-      buttons.push(btn);
-    });
-  } else {
-    const submenu = mainMenu.find(x => x.name.toLowerCase() === menuName).submenu;
-    submenu.forEach((item) => {
-      const btn = document.createElement('button');
-      btn.textContent = item.name;
-      btn.onclick = () => window.location.href = item.link;
-      menuDiv.appendChild(btn);
-      buttons.push(btn);
-    });
-    const backBtn = document.createElement('button');
-    backBtn.textContent = 'Back';
-    backBtn.onclick = () => openMenu('main');
-    menuDiv.appendChild(backBtn);
-    buttons.push(backBtn);
-  }
-
-  menuButtons = buttons;
-  selectedIndex = 0;
-  currentMenu = menuName;
-  updateHighlight();
-}
-
-// Initialize main menu
-openMenu('main');
-
-// Keyboard support
-document.addEventListener('keydown', (e) => {
-  if(e.key === 'ArrowDown') {
-    selectedIndex = (selectedIndex + 1) % menuButtons.length;
-    updateHighlight();
-  } else if(e.key === 'ArrowUp') {
-    selectedIndex = (selectedIndex - 1 + menuButtons.length) % menuButtons.length;
-    updateHighlight();
-  } else if(e.key === 'Enter') {
-    safeClick(menuButtons[selectedIndex]);
-  }
-});
-
-// Gamepad support
-window.addEventListener("gamepadconnected", () => {
-  const gpIndex = 0;
-  function pollGamepad() {
-    const gp = navigator.getGamepads()[gpIndex];
-    if(!gp) return;
-
-    if(gp.axes[1] < -0.5) {
-      selectedIndex = (selectedIndex - 1 + menuButtons.length) % menuButtons.length;
-      updateHighlight();
-    } else if(gp.axes[1] > 0.5) {
-      selectedIndex = (selectedIndex + 1) % menuButtons.length;
-      updateHighlight();
+      if(username === "jack" && password === "1234") {
+        // Hide the button
+        document.getElementById('loginBtn').style.display = 'none';
+        // Show the image
+        document.getElementById('loginImg').style.display = 'block';
+      } else {
+        alert("Invalid credentials!");
+      }
     }
-
-    if(gp.buttons[0].pressed) {
-      safeClick(menuButtons[selectedIndex]);
-    }
-
-    requestAnimationFrame(pollGamepad);
-  }
-  pollGamepad();
-});
-// ---- JS END ----
-</script>
+  </script>
 </body>
 </html>
