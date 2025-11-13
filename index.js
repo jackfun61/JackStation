@@ -13,6 +13,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// Root route for testing
+app.get('/', (req, res) => {
+  res.send('JackStation Email Service is running!');
+});
+
+// Email verification route
 app.post('/send-verification', async (req, res) => {
   const { email, code } = req.body;
   try {
